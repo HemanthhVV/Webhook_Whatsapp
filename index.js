@@ -61,7 +61,7 @@ app.post("/webhook", (req, res) => { //i want some
                     messaging_product: "whatsapp",
                     to: from,
                     text: {
-                        body: "Hi.. I'm Prasath, your message is " + msg_body
+                        body: "Test works\n Echo: " + msg_body
                     }
                 },
                 headers: {
