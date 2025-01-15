@@ -9,6 +9,11 @@ const token = process.env.TOKEN;
 const mytoken = process.env.MYTOKEN;//prasath_token
 
 
+let clients = []
+
+function sendToClients(message) {
+    clients.forEach(client => client.res.write(`data: ${JSON.stringify(message)}\n\n`));
+}
 
 app.listen(process.env.PORT, () => {
     console.log("webhook is listening");
@@ -50,6 +55,8 @@ app.post("/webhook", (req, res) => { //i want some
             let from = body_param.entry[0].changes[0].value.messages[0].from;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
+            sendToClients(msg_body)
+
             console.log("phone number " + phon_no_id);
             console.log("from " + from);
             console.log("body param " + msg_body);
@@ -77,6 +84,21 @@ app.post("/webhook", (req, res) => { //i want some
 
     }
 
+});
+
+// SSE endpoint
+app.get('/events', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // Add the client to the list of clients
+    clients.push({ res });
+
+    // Remove the client when the connection is closed
+    req.on('close', () => {
+        clients = clients.filter(client => client.res !== res);
+    });
 });
 
 app.get("/", (req, res) => {
