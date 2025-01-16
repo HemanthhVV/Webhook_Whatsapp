@@ -12,7 +12,7 @@ const token = process.env.TOKEN;
 const mytoken = process.env.MYTOKEN;//prasath_token
 
 
-let clients = []
+let clients = new Set();
 
 function sendToClients(message) {
     clients.forEach(client => client.res.write(`data: ${JSON.stringify(message)}\n\n`));
@@ -45,7 +45,7 @@ app.post("/webhook", (req, res) => { //i want some
 
     let body_param = req.body;
 
-    // console.log(JSON.stringify(body_param, null, 2));
+    console.log(JSON.stringify(body_param, null, '/n'));
 
     if (body_param.object) {
         console.log("inside body param");
@@ -82,6 +82,7 @@ app.post("/webhook", (req, res) => { //i want some
 
             res.sendStatus(200);
         } else {
+            sendToClients("NOthing")
             res.sendStatus(404);
         }
 
@@ -96,12 +97,13 @@ app.get('/events', (req, res) => {
     res.setHeader('Connection', 'keep-alive');
 
     // Add the client to the list of clients
-    clients.push({ res });
+    clients.add({ res });
 
     // Remove the client when the connection is closed
     req.on('close', () => {
         clients = clients.filter(client => client.res !== res);
     });
+    console.log(clients);
 });
 
 app.get("/", (req, res) => {
