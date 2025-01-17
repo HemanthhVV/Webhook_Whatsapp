@@ -15,7 +15,7 @@ const mytoken = process.env.MYTOKEN;//prasath_token
 let clients = new Set();
 
 function sendToClients(message) {
-    clients.forEach(client => client.res.write(`data: ${JSON.stringify(message)}`));
+    clients.forEach(client => client.res.write(`data: ${JSON.stringify(message)}\n\n`));
 }
 
 app.listen(process.env.PORT, () => {
