@@ -100,7 +100,7 @@ app.get('/events', (req, res) => {
 
     // Remove the client when the connection is closed
     req.on('close', () => {
-        clients = clients.filter(client => client.res !== res);
+        clients.delete(client); // Properly remove the client from the set
     });
     console.log(clients);
 });
