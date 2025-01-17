@@ -82,7 +82,6 @@ app.post("/webhook", (req, res) => { //i want some
 
             res.sendStatus(200);
         } else {
-            sendToClients("NOthing")
             res.sendStatus(404);
         }
 
